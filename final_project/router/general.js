@@ -85,6 +85,31 @@ public_users.get('/author/:author',function (req, res) {
 
 });
 
+//===== obtener detalles del libro basado en el ISBN async-await con Axios =====//
+const getBookByISBN = async (isbn) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
+        return response.data;
+    } catch (error) {
+        console.log("Error fetching book by ISBN:", error.message);
+        throw error;
+    }
+};
+
+public_users.get('/async-isbn/:isbn', async (req, res) => {
+    const { isbn } = req.params;
+    try {
+        const book = await getBookByISBN(isbn);
+        res.status(200).json(book);
+    } catch (err) {
+        res.status(500).json({ 
+            message: "Error retrieving book by ISBN asynchronously",
+            error_details: err.message
+        });
+    }
+});
+
+
 //===== obtener detalle del libro async-await con Axios =====//
 const getBooksByAuthor = async (author) => {
     try {
