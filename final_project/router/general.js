@@ -85,6 +85,30 @@ public_users.get('/author/:author',function (req, res) {
 
 });
 
+//===== obtener detalle del libro async-await con Axios =====//
+const getBooksByAuthor = async (author) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/author/${author}`); 
+        return response.data;
+    } catch (error) {
+        console.log("Error fetching books by author:", error.message);
+        throw error;
+    } 
+};
+
+public_users.get('/async-author/:author', async (req, res) => {
+    const { author } = req.params;
+    try {
+        const books = await getBooksByAuthor(author);
+        res.status(200).json(books);
+    } catch (err) {
+       res.status(500).json({ 
+            message: "Error retrieving books by author asynchronously",
+            error_details: err.message
+        });
+    }
+});
+
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
     const { title } = req.params;
