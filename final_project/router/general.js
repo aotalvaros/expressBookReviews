@@ -4,6 +4,7 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+const axios = require('axios');
 
 public_users.post("/register", (req,res) => {
     const {username, password} = req.body;
@@ -24,6 +25,26 @@ public_users.post("/register", (req,res) => {
 public_users.get('/',function (req, res) {
   //Write your code here
  res.send(JSON.stringify(books))
+});
+
+const getBooksList = async () => {
+    try {
+        const response = await axios.get("http://localhost:5000/"); 
+        return response.data;
+    } catch (error) {
+        console.log("Error fetching books:", error.message);
+        throw error;
+    }
+};
+
+public_users.get('/async-get-books', async (req, res) => {
+    try {
+        const books = await getBooksList();
+        res.status(200).json(books);
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({message: "Error retrieving books asynchronously"});
+    }
 });
 
 // Get book details based on ISBN
