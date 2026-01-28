@@ -156,6 +156,29 @@ public_users.get('/title/:title',function (req, res) {
 
 });
 
+//===== obtener detalles del libro basado en el título async-await con Axios =====//
+const getBooksByTitle = async (title) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/title/${title}`); 
+        return response.data;
+    } catch (error) {
+        console.log("Error fetching books by title:", error.message);
+        throw error;
+    }
+};
+public_users.get('/async-title/:title', async (req, res) => {
+    const { title } = req.params;
+    try {
+        const books = await getBooksByTitle(title);
+        res.status(200).json(books);
+    } catch (err) {
+       res.status(500).json({ 
+            message: "Error retrieving books by title asynchronously",
+            error_details: err.message
+        });
+    }
+})
+
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
     const isbn = req.params.isbn; 
